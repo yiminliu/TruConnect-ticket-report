@@ -20,10 +20,7 @@ import com.tscp.mvne.NetworkInfo;
 //import com.tscp.mvne.ProvisionException_Exception;
 import com.tscp.mvne.ServiceInstance;
 import com.tscp.mvne.TruConnect;
-import com.tscp.mvne.billing.exception.BillingServerException;
-import com.tscp.mvne.billing.exception.ProvisionException;
-import com.tscp.mvne.customer.DeviceException;
-import com.tscp.mvne.network.exception.NetworkException;
+
 
 @Service
 public class DeviceService implements DeviceServiceModel {
