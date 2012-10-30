@@ -92,7 +92,7 @@
         </form:form>
       </div>
       <div class="span-6 last sub-navigation">
-        <<span style="float: right; float: bottom;"><%@ include file="/WEB-INF/includes/admin/navigation/adminNav.jsp"%></span>    
+        <span style="float: right; float: bottom;"><%@ include file="/WEB-INF/includes/admin/navigation/adminNav.jsp"%></span>    
 
       </div>
     </div>
