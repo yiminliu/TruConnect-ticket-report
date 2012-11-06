@@ -3,7 +3,7 @@ package com.trc.dao;
 import java.util.List;
 import java.util.Set;
 
-import com.trc.domain.support.ticket.Ticket;
+import com.trc.domain.ticket.Ticket;
 import com.trc.user.User;
 
 public interface TicketDao {

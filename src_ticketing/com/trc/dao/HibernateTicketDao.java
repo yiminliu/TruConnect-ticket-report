@@ -2,24 +2,17 @@ package com.trc.dao;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
-import org.hibernate.LockMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.trc.domain.support.ticket.Ticket;
-import com.trc.domain.support.ticket.TicketNote;
-import com.trc.domain.support.ticket.TicketStatus;
+import com.trc.domain.ticket.Ticket;
+import com.trc.domain.ticket.TicketNote;
+import com.trc.domain.ticket.TicketStatus;
 import com.trc.manager.UserManager;
 import com.trc.user.User;
 
@@ -50,26 +43,24 @@ public class HibernateTicketDao extends HibernateDaoSupport implements TicketDao
   }
 
   @Override
+  @Transactional(readOnly=true)
+  public List<Ticket> getAllTickets(){
+	  return (List<Ticket>)getHibernateTemplate().find("from Ticket t order by t.id desc");
+  }
+  
+  @Override
   public void updateTicket(Ticket ticket) {
-	 validateTicket(ticket);	 
+	 validateTicket(ticket); 
      ticket.setLastModifiedDate(new Timestamp(System.currentTimeMillis()));	
      getHibernateTemplate().saveOrUpdate(ticket);
   }
-
 
   @Override
   public void deleteTicket(Ticket ticket) {
 	 validateTicket(ticket);	
      getHibernateTemplate().delete(ticket);
   }
-  
-  @Override
-  @Transactional(readOnly=true)
-  public List<Ticket> getAllTickets(){
-	  return getHibernateTemplate().find("from Ticket t order by t.id desc");
-  }
-    
-    
+      
   @Override
   @Transactional(readOnly=true)
   public List<User> getAllCreators() {

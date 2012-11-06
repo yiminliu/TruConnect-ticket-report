@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.trc.dao.HibernateTicketDao;
-import com.trc.domain.support.ticket.Ticket;
-import com.trc.domain.support.ticket.TicketCategory;
-import com.trc.domain.support.ticket.TicketNote;
-import com.trc.domain.support.ticket.TicketPriority;
+import com.trc.domain.ticket.Ticket;
+import com.trc.domain.ticket.TicketCategory;
+import com.trc.domain.ticket.TicketNote;
+import com.trc.domain.ticket.TicketPriority;
 import com.trc.exception.service.CouponServiceException;
 import com.trc.exception.service.TicketServiceException;
 import com.trc.user.User;

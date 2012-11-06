@@ -13,9 +13,10 @@ import com.trc.exception.EmailException;
 import com.trc.exception.management.TicketManagementException;
 import com.trc.exception.service.TicketServiceException;
 import com.trc.manager.UserManager;
-import com.trc.domain.support.ticket.Ticket;
-import com.trc.domain.support.ticket.TicketNote;
-import com.trc.domain.support.ticket.TicketStatus;
+import com.trc.domain.ticket.Ticket;
+import com.trc.domain.ticket.TicketNote;
+import com.trc.domain.ticket.TicketStatus;
+import com.trc.domain.ticket.TicketType;
 import com.trc.service.email.VelocityEmailService;
 import com.trc.service.ticket.TicketServiceImpl;
 import com.trc.user.User;
@@ -46,13 +47,31 @@ public class TicketManagerImpl implements TicketManager {
      try {
     	if(ticket != null && ticket.getCustomer() != null)
     	   customer = userManager.getUserByUsername(ticket.getCustomer().getUsername());
-    	if(ticket != null && ticket.getAssignee() == null)
-    		assignee = userManager.getUserByUsername("yiminliu");		
+    	if(ticket.getType() != null && !ticket.getType().equals(TicketType.CUSTOMER)) {
+    	   if(ticket != null && ticket.getAssignee() == null)
+    		  assignee = userManager.getUserByUsername("yiminliu");		
+    	   else
+              assignee = userManager.getUserByUsername(ticket.getAssignee().getUsername());        	   
+    	   ticket.setAssignee(assignee);
+    	   ticket.setCreator(userManager.getLoggedInUser());
+    	}    
+    	if(customer != null)
+           ticket.setCustomer(customer);
     	else
-            assignee = userManager.getUserByUsername(ticket.getAssignee().getUsername());    		
-    	ticket.setCustomer(customer);
-		ticket.setAssignee(assignee);
- 	    ticket.setCreator(userManager.getLoggedInUser());	    	    		
+    	   ticket.setCustomer(userManager.getLoggedInUser());
+    	ticket.setStatus(TicketStatus.OPEN);
+        return ticketService.createTicket(ticket);
+    } 
+    catch (TicketServiceException e) {
+      throw new TicketManagementException(e.getMessage(), e.getCause());
+    }
+  }
+  
+  @Override
+  @Loggable(value = LogLevel.TRACE)
+  public int customerCreateTicket(Ticket ticket) throws TicketManagementException {
+	try {
+    	ticket.setCustomer(userManager.getLoggedInUser());	    	    		
 		ticket.setStatus(TicketStatus.OPEN);
         return ticketService.createTicket(ticket);
     } 
@@ -89,7 +108,7 @@ public class TicketManagerImpl implements TicketManager {
 	     if(notes != null && notes.size() > 0){
             TicketNote note = notes.get(0);
 	        note.setAuthor(userManager.getLoggedInUser());
-		    note.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+	        note.setCreatedDate(new Timestamp(System.currentTimeMillis()));
 	        ticket.addNote(note);		  
 	     }   
 	     ticketService.updateTicket(ticket);
@@ -98,6 +117,33 @@ public class TicketManagerImpl implements TicketManager {
        throw new TicketManagementException(e.getMessage(), e.getCause());
     }
   }   
+  
+  @Override
+  @Loggable(value = LogLevel.TRACE)
+  public void customerUpdateTicket(Ticket ticket) throws TicketManagementException {
+	 User customer = null;
+   	 User assignee = null;
+   	 List<TicketNote> notes = (List<TicketNote>)ticket.getNotes();
+     try {
+      	 if(ticket != null && ticket.getCustomer() != null && ticket.getCustomer().getEmail() == null) {	
+		    customer = userManager.getUserByUsername(ticket.getCustomer().getUsername());
+		    ticket.setCustomer(customer);
+	     }   
+	     if(notes != null && notes.size() > 0){
+            TicketNote note = notes.get(0);
+	        note.setAuthor(customer);
+		    note.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+	        ticket.addNote(note);		  
+	     }   
+	     if(TicketType.CUSTOMER.equals(ticket.getType()))
+	    	 ticket.setStatus(TicketStatus.REOPEN);		 
+	     ticketService.updateTicket(ticket);
+    } 
+    catch (TicketServiceException e) {
+       throw new TicketManagementException(e.getMessage(), e.getCause());
+    }
+  }   
+  
     
   @Override
   @Loggable(value = LogLevel.TRACE)

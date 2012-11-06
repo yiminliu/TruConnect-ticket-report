@@ -58,6 +58,11 @@
                 <tr>
                     <td><span class="span-4">Requester: </span></td>
                     <td><span class="span-4">${ticket.creator.username}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="span-4">Type: </span></td>
+                    <td><span class="span-4">${fn:toLowerCase(ticket.type)}</span></td>
+                </tr>
                 <tr>
                     <td><span class="span-4">Created Date: </span></td>
                     <td><fmt:formatDate type="date" value="${ticket.createdDate}"/></td>
@@ -88,7 +93,7 @@
                       <!--<form:form id="decketDetailBack" action="/TruConnect/ticket" method="get" commandName="ticket" >                       
                          <div class="button action-m"> <input id="ticketOverviewSubmit" class="button action-m" type="submit" name="_eventId_submit" value="Ticket Home" style="padding-left: 5px; padding-right: 5px;"/></div>
                       </form:form>-->
-                         <a href="<spring:url value="/ticket" />" class="button action-m"><span>Ticket Home</span></a>
+                         <a href="<spring:url value="/ticket" />" class="button action-m"><span>Tickets Home</span></a>
                    </td>
                 </tr>       
              </table>
